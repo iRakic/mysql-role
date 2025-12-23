@@ -16,6 +16,9 @@ mysql_user_password_update: false
 
 mysql_enabled_on_startup: true
 
+# Set this to `true` to force reinstall MySQL even if it's already installed.
+mysql_force_install: false
+
 # Whether my.cnf should be updated on every run.
 overwrite_global_mycnf: true
 
