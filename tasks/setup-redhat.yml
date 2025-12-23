@@ -1,7 +1,17 @@
 ---
+- name: Check if MySQL is already installed.
+  ansible.builtin.stat:
+    path: "{{ mysql_config_file }}"
+  register: mysql_installed
+
+- name: Set MySQL installation flag.
+  ansible.builtin.set_fact:
+    mysql_should_install: "{{ mysql_force_install or not mysql_installed.stat.exists }}"
+
 - name: Ensure MySQL packages are installed.
   ansible.builtin.yum:
     name: "{{ mysql_packages }}"
     state: present
     enablerepo: "{{ mysql_enablerepo | default(omit, true) }}"
   register: rh_mysql_install_packages
+  when: mysql_should_install
