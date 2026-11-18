@@ -139,4 +139,5 @@ mysql_replication_user: []
 
 mysql_hide_passwords: false
 
+mysql_logrotate: false
 mysql_users_plugin: ""

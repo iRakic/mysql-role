@@ -92,3 +92,12 @@
     state: started
     enabled: "{{ mysql_enabled_on_startup }}"
   register: mysql_service_configuration
+
+- name: Add logrotate rule for MySQL logs
+  ansible.builtin.template:
+    src: logrotate-mysql.j2
+    dest: /etc/logrotate.d/mysql-server
+    owner: root
+    group: root
+    mode: 0644
+  when: mysql_logrotate | bool
