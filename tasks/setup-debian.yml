@@ -24,12 +24,16 @@
   when: mysql_should_install
 
 - name: Specify MySQL repo preference.
-  ansible.builtin.shell: echo mysql-apt-config mysql-apt-config/select-server select mysql-8.0 | debconf-set-selections
+  ansible.builtin.shell: echo mysql-apt-config mysql-apt-config/select-server select {{ mysql_apt_server }} | debconf-set-selections
   when: mysql_should_install
-  
+
 - name: Add MySQL apt-config for Debian.
   apt:
     deb: /tmp/mysql-apt-config_0.8.36-1_all.deb
+  when: mysql_should_install
+
+- name: Apply MySQL repo preference.
+  ansible.builtin.command: dpkg-reconfigure -f noninteractive mysql-apt-config
   when: mysql_should_install
 
 - name: Update APT cache
