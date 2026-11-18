@@ -141,3 +141,4 @@ mysql_hide_passwords: false
 
 mysql_logrotate: false
 mysql_users_plugin: ""
+mysql_legacy_authentication: false
