@@ -18,7 +18,12 @@ skip-name-resolve
 sql_mode = {{ mysql_sql_mode }}
 {% endif %}
 {% if mysql_legacy_authentication %}
+{% if not mysql_is_mariadb and mysql_version_number is version('8.4', '>=') %}
+mysql_native_password=ON
+authentication_policy=mysql_native_password,,
+{% else %}
 default-authentication-plugin=mysql_native_password
+{% endif %}
 {% endif %}
 
 # Logging configuration.
@@ -90,7 +95,7 @@ read_buffer_size = {{ mysql_read_buffer_size }}
 read_rnd_buffer_size = {{ mysql_read_rnd_buffer_size }}
 myisam_sort_buffer_size = {{ mysql_myisam_sort_buffer_size }}
 thread_cache_size = {{ mysql_thread_cache_size }}
-{% if '8.0.' not in mysql_cli_version.stdout %}
+{% if mysql_is_mariadb or mysql_version_number is version('8.0', '<') %}
 query_cache_type = {{ mysql_query_cache_type }}
 query_cache_size = {{ mysql_query_cache_size }}
 query_cache_limit = {{ mysql_query_cache_limit }}
@@ -107,7 +112,7 @@ lower_case_table_names = {{ mysql_lower_case_table_names }}
 event_scheduler = {{ mysql_event_scheduler_state }}
 
 # InnoDB settings.
-{% if mysql_supports_innodb_large_prefix and '8.0.' not in mysql_cli_version.stdout %}
+{% if mysql_supports_innodb_large_prefix and (mysql_is_mariadb or mysql_version_number is version('8.0', '<')) %}
 innodb_large_prefix = {{ mysql_innodb_large_prefix }}
 innodb_file_format = {{ mysql_innodb_file_format }}
 {% endif %}

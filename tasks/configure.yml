@@ -5,6 +5,12 @@
   changed_when: false
   check_mode: false
 
+- name: Set MySQL version facts.
+  ansible.builtin.set_fact:
+    mysql_is_mariadb: "{{ 'mariadb' in mysql_cli_version.stdout | lower }}"
+    mysql_version_number: >-
+      {{ (mysql_cli_version.stdout | regex_findall('(?:Distrib |Ver )(\\d+\\.\\d+\\.\\d+)') + ['0.0.0']) | first }}
+
 - name: Copy my.cnf global MySQL configuration.
   ansible.builtin.template:
     src: my.cnf.j2
@@ -86,3 +92,12 @@
     state: started
     enabled: "{{ mysql_enabled_on_startup }}"
   register: mysql_service_configuration
+
+- name: Add logrotate rule for MySQL logs
+  ansible.builtin.template:
+    src: logrotate-mysql.j2
+    dest: /etc/logrotate.d/mysql-server
+    owner: root
+    group: root
+    mode: 0644
+  when: mysql_logrotate | bool

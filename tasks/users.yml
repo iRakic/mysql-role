@@ -3,8 +3,9 @@
   mysql_user:
     name: "{{ item.name }}"
     host: "{{ item.host | default('localhost') }}"
-    password: "{{ item.password }}"
-    plugin: "{{ item.plugin | default(omit) }}"
+    password: "{{ omit if (item.plugin | default(mysql_users_plugin)) else item.password }}"
+    plugin: "{{ (item.plugin | default(mysql_users_plugin)) or omit }}"
+    plugin_auth_string: "{{ item.password if (item.plugin | default(mysql_users_plugin)) else omit }}"
     priv: "{{ item.priv | default('*.*:USAGE') }}"
     state: "{{ item.state | default('present') }}"
     append_privs: "{{ item.append_privs | default('no') }}"

@@ -1,0 +1,13 @@
+# {{ ansible_managed }}
+/var/log/mysql/*.log {
+	daily
+	rotate 14
+	missingok
+	notifempty
+	compress
+	delaycompress
+	create 640 mysql adm
+	postrotate
+		test -x /usr/bin/mysqladmin && /usr/bin/mysqladmin --defaults-file={{ mysql_root_home }}/.my.cnf flush-logs error slow general >/dev/null 2>&1 || true
+	endscript
+}
