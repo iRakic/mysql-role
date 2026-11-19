@@ -9,7 +9,7 @@
   ansible.builtin.set_fact:
     mysql_is_mariadb: "{{ 'mariadb' in mysql_cli_version.stdout | lower }}"
     mysql_version_number: >-
-      {{ (mysql_cli_version.stdout | regex_findall('(?:Distrib |Ver )(\\d+\\.\\d+\\.\\d+)') + ['0.0.0']) | first }}
+      {{ (mysql_cli_version.stdout | regex_findall('(?:Distrib |Ver )(\d+\.\d+\.\d+)') + ['0.0.0']) | first }}
 
 - name: Copy my.cnf global MySQL configuration.
   ansible.builtin.template:
