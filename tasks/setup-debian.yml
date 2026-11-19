@@ -33,7 +33,13 @@
   when: mysql_should_install
 
 - name: Apply MySQL repo preference.
-  ansible.builtin.command: dpkg-reconfigure -f noninteractive mysql-apt-config
+  ansible.builtin.copy:
+    dest: /etc/apt/sources.list.d/mysql.list
+    mode: "0644"
+    content: |
+      deb [signed-by=/usr/share/keyrings/mysql-apt-config.gpg] http://repo.mysql.com/apt/{{ ansible_distribution | lower }}/ {{ ansible_distribution_release }} mysql-apt-config
+      deb [signed-by=/usr/share/keyrings/mysql-apt-config.gpg] http://repo.mysql.com/apt/{{ ansible_distribution | lower }}/ {{ ansible_distribution_release }} {{ mysql_apt_server }}
+      deb [signed-by=/usr/share/keyrings/mysql-apt-config.gpg] http://repo.mysql.com/apt/{{ ansible_distribution | lower }}/ {{ ansible_distribution_release }} mysql-tools
   when: mysql_should_install
 
 - name: Update APT cache
